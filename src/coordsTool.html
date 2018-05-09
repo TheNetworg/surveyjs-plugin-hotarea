@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Coords tool</title>
+</head>
+
+<body>
+    <input type="text" id="picSource" value="https://www.google.cz/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png">
+    <button onclick="loadPicture()">loadPicture</button>
+    <br>
+    <canvas id="myCanvas"></canvas>
+
+    <input type="checkbox" id="jsonToggle" onclick="logCoords()">Generate as json?
+
+    <p id="myResult"></p>
+
+
+    <script>
+        var rectangles = [];
+
+        var mycanvas = document.getElementById("myCanvas");
+        var context = mycanvas.getContext('2d');
+
+        loadPicture();
+
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        mycanvas.onmousedown = function (e) {
+            var mousePosStart = getMousePos(mycanvas, e);
+            startx = mousePosStart.x;
+            starty = mousePosStart.y;
+        }
+
+        mycanvas.onmouseup = function (e) {
+            var mousePosEnd = getMousePos(mycanvas, e);
+
+            var width = mousePosEnd.x - startx;
+            var height = mousePosEnd.y - starty;
+
+            context.rect(startx, starty, width, height);
+            context.strokeStyle = "#FF0000";
+            context.stroke();
+
+            rectangles.push({ sx: startx, sy: starty, ex: mousePosEnd.x, ey: mousePosEnd.y });
+
+            logCoords()
+        }
+
+        function logCoords() {
+
+            var result = document.getElementById("myResult");
+            var resultString = "";
+            var index = 1;
+            if (document.getElementById("jsonToggle").checked) {
+                resultString += "choices: "
+                for (var rectangle of rectangles) {
+                    resultString += "<br>[" +
+                        "{" +
+                        "value:\" \"Name of question " + index + "\"," +
+                        "coords: " + rectangle.sx + "," + rectangle.sy + "," + rectangle.ex + "," + rectangle.ey +
+                        "}" +
+                        "]"
+                    index++;
+                }
+
+            } else {
+                for (var rectangle of rectangles) {
+                    resultString += "<br>" + index + ": " + (rectangle.sx + "," + rectangle.sy + "," + rectangle.ex + "," + rectangle.ey);
+                    index++;
+                }
+            }
+            index = 1
+            result.innerHTML = resultString;
+        }
+
+        function loadPicture() {
+            var imgSrc = document.getElementById("picSource").value;
+
+            var img = new Image();
+            img.onload = function () {
+                mycanvas.width = this.width;
+                mycanvas.height = this.height;
+                context.drawImage(img, 0, 0);
+            }
+            img.src = imgSrc;
+        }
+
+    </script>
+</body>
+
+</html>
