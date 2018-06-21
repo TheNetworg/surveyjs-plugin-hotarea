@@ -58,7 +58,7 @@ var widget = {
         for (var area of question.choices) {
             var newArea = document.createElement("AREA");
             newArea.shape = "rect";
-            newArea.coords = area.coords;
+            newArea.coords = area.text;
             newArea.alt = area.value;
             newArea.addEventListener("click", function () { question.value = this.alt });
 

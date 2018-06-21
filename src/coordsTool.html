@@ -36,6 +36,7 @@
             var mousePosStart = getMousePos(mycanvas, e);
             startx = mousePosStart.x;
             starty = mousePosStart.y;
+
         }
 
         mycanvas.onmouseup = function (e) {
@@ -59,6 +60,10 @@
             var resultString = "";
             var index = 1;
             if (document.getElementById("jsonToggle").checked) {
+                resultString += "type: \"picturehotzone\",<br>" +
+                    "name: \"Example question\", <br>" +
+                    "title: \"Example title:\", <br>" +
+                    "imageLink: \"" + document.getElementById("picSource").value + "\",<br>"
                 resultString += "choices: "
                 for (var rectangle of rectangles) {
                     resultString += "<br>[" +
@@ -90,6 +95,7 @@
                 context.drawImage(img, 0, 0);
             }
             img.src = imgSrc;
+            rectangles = [];
         }
 
     </script>
